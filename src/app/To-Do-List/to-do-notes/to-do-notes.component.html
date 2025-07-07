@@ -3,21 +3,50 @@
         <h1 class="text-3xl font-bold mb-4">To-Do List</h1>
         <div class="flex">
             <input
+            [(ngModel)]="taskInput"
             type="text"
             placeholder="Add a new task"
             class="flex-grow p-2 text-black rounded-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
-            <button (click)="newTask()" class="bg-blue-500 text-white px-4 rounded-r hover:bg-blue-600">
-                Add
+            <button 
+                (click)="isEditing ? updateTask() : addTask()" 
+                class="bg-blue-500 text-white px-4 rounded-r hover:bg-blue-600"
+            >
+                {{ isEditing ? 'Update' : 'Add' }}
             </button>
         </div>
-         <div class="flex items-center justify-center h-32 text-gray-300">
-            No task for this day
-        </div>
-        <div class="flex justify-end">
-            <button (click)="deleteAll()" class="flex items-end justify-end p-1 bg-red-500 text-white px-4 rounded-sm hover:bg-red-600">
-                Delete All
-            </button>
-        </div>
+        
+        @if (tasks.length === 0) {
+            <div class="flex items-center justify-center h-32 text-gray-300">
+                No tasks for today
+            </div>
+        } @else {
+            <ul class="mt-4 space-y-2">
+                @for (task of tasks; track $index) {
+                    <li class="flex justify-between items-center p-2 bg-gray-100 rounded-sm">
+                        <span class="text-ellipsis overflow-hidden ...">{{ task }}</span>
+                        <div class="flex space-x-2">
+                            <button (click)="markDone($index)" class="text-gray-500 hover:bg-blue-600 hover:text-white p-1 rounded-md">
+                                <i class="pi pi-check" style="font-size: 1rem"></i>
+                            </button>
+                            <button (click)="editTask($index)" class="text-gray-500 hover:bg-blue-600 hover:text-white p-1 rounded-md">
+                                <i class="pi pi-pencil" style="font-size: 1rem"></i>
+                            </button>
+                            <button (click)="deleteTask($index)" class="text-gray-500 hover:bg-blue-600 hover:text-white p-1 rounded-md">
+                                <i class="pi pi-trash" style="font-size: 1rem"></i>
+                            </button>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        
+        @if (tasks.length > 0) {
+            <div class="flex justify-end mt-4">
+                <button (click)="deleteAll()" class="p-2 bg-red-500 text-white px-4 rounded-sm hover:bg-red-600">
+                    Delete All
+                </button>
+            </div>
+        }
     </div>
 </main>
