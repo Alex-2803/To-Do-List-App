@@ -6,11 +6,12 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './to-do-notes.component.html',
-  styleUrl: './to-do-notes.component.scss'
+  styleUrl: './to-do-notes.component.scss',
 })
 export class ToDoNotesComponent {
   taskInput: string = '';
   tasks: string[] = [];
+  completedTasks: boolean[] = [];
   isEditing: boolean = false;
   editIndex: number = -1;
 
@@ -21,6 +22,7 @@ export class ToDoNotesComponent {
   addTask() {
     if (this.taskInput.trim()) {
       this.tasks.unshift(this.taskInput.trim());
+      this.completedTasks.unshift(false);
       this.taskInput = '';
       this.localSave();
     }
@@ -39,12 +41,12 @@ export class ToDoNotesComponent {
       this.isEditing = false;
       this.editIndex = -1;
       this.localSave();
-
     }
   }
 
   deleteTask(index: number) {
     this.tasks.splice(index, 1);
+    this.completedTasks.splice(index, 1);
     if (this.isEditing && this.editIndex === index) {
       this.isEditing = false;
       this.editIndex = -1;
@@ -52,30 +54,39 @@ export class ToDoNotesComponent {
     }
     this.localSave();
   }
+
   markDone(index: number) {
-    
-  
+    this.completedTasks[index] = !this.completedTasks[index];
+    this.localSave();
   }
 
   deleteAll() {
     this.tasks = [];
+    this.completedTasks = [];
     this.isEditing = false;
     this.editIndex = -1;
     this.taskInput = '';
   }
 
-  localSaveStorage(){
+  localSaveStorage() {
     const savedTasks = localStorage.getItem('tasks');
+    const savedCompleted = localStorage.getItem('completedTasks');
+
     if (savedTasks) {
       this.tasks = JSON.parse(savedTasks);
     }
+
+    if (savedCompleted) {
+      this.completedTasks = JSON.parse(savedCompleted);
+    } else {
+      this.completedTasks = this.tasks.map(() => false);
+    }
   }
   localSave() {
-    localStorage.setItem('tasks', JSON.stringify(this.tasks)); 
-  
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    localStorage.setItem('completedTasks', JSON.stringify(this.completedTasks));
   }
   localClear() {
     localStorage.removeItem('tasks');
   }
-
 }
