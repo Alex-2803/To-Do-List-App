@@ -66,6 +66,8 @@ export class ToDoNotesComponent {
     this.isEditing = false;
     this.editIndex = -1;
     this.taskInput = '';
+    this.localSave();
+
   }
 
   localSaveStorage() {
@@ -86,7 +88,5 @@ export class ToDoNotesComponent {
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
     localStorage.setItem('completedTasks', JSON.stringify(this.completedTasks));
   }
-  localClear() {
-    localStorage.removeItem('tasks');
-  }
+
 }
